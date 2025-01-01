@@ -83,6 +83,8 @@ body {
     padding: 25px 22px;
     height: 460px;
     margin-bottom: 82px;
+    scrollbar-width: thin;
+    scrollbar-color: #d1c1e9 transparent;
 }
 
 .chatbot-body .message {
