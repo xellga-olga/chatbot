@@ -1,15 +1,42 @@
 import ChatbotIcon from "./components/ChatbotIcon.jsx";
 import ChatForm from "./components/ChatForm.jsx";
-import {useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import ChatMessage from "./components/ChatMessage.jsx";
 
 const App = () => {
 
     const [chatHistory, setChatHistory] = useState([]);
+    const chatBodyRef = useRef();
 
-    const generateBotResponse = (history) => {
-        console.log(history);
+    const generateBotResponse = async (history) => {
+        // Helper function to update chat history
+        const updateHistory = (text) => {
+            setChatHistory(prev => [...prev.filter(msg => msg.text !== "Thinking..."), {role: 'model', text}]);
+        }
+        // Format chat history for API request
+        history = history.map(({role, text}) => ({role, parts: [{text}]}))
+        const requestOptions ={
+            method: 'POST',
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({contents: history}),
+        }
+
+        try {
+            const response = await fetch(import.meta.env.VITE_API_URL, requestOptions);
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.error.message || "Something went wrong!");
+            console.log(data);
+            const apiResponseText = data.candidates[0].content.parts[0].text.replace(/\*\*(.*?)\*\*/g, "$1").trim();
+            updateHistory(apiResponseText);
+        } catch (error) {
+            console.error(error);
+        }
     }
+
+    useEffect(() => {
+        // Auto-scroll whenever chat history updates
+        chatBodyRef.current.scrollTo({top: chatBodyRef.current.scrollHeight, behavior: "smooth"});
+    }, [chatHistory]);
 
     return (
         <div className='container'>
@@ -25,7 +52,7 @@ const App = () => {
                     </button>
                 </div>
                 {/*Chatbot Body*/}
-                <div className='chatbot-body'>
+                <div ref={chatBodyRef} className='chatbot-body'>
                     <div className='message bot-message'>
                         <ChatbotIcon/>
                         <p className='message-text'>
