@@ -7,6 +7,7 @@ const App = () => {
 
     const [chatHistory, setChatHistory] = useState([]);
     const chatBodyRef = useRef();
+    const [showChatbot, setShowChatbot] = useState(false);
 
     const generateBotResponse = async (history) => {
         // Helper function to update chat history
@@ -39,7 +40,15 @@ const App = () => {
     }, [chatHistory]);
 
     return (
-        <div className='container'>
+        <div className={`container ${showChatbot ? "show-chatbot" : ""}`}>
+            <button id='chatbot-toggler' onClick={() => setShowChatbot((prev) => !prev )}>
+                <span className="material-symbols-outlined">
+                    mode_comment
+                </span>
+                <span className="material-symbols-outlined">
+                    close
+                </span>
+            </button>
             <div className='chatbot'>
                 {/*Chatbot Header*/}
                 <div className='chatbot-header'>
@@ -47,7 +56,7 @@ const App = () => {
                         <ChatbotIcon/>
                         <h2 className='logo-text'>Chatbot</h2>
                     </div>
-                    <button className="material-symbols-outlined">
+                    <button onClick={() => setShowChatbot((prev) => !prev )} className="material-symbols-outlined">
                        keyboard_arrow_down
                     </button>
                 </div>
