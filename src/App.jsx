@@ -40,45 +40,69 @@ const App = () => {
     }, [chatHistory]);
 
     return (
-        <div className={`container ${showChatbot ? "show-chatbot" : ""}`}>
-            <button id='chatbot-toggler' onClick={() => setShowChatbot((prev) => !prev )}>
+        <div className=''>
+            <div className='app'>
+                <h1>Hello! 👋</h1>
+                <h2>I’m your virtual assistant, here to help you with any questions you have.</h2>
+                <h2>Let’s get started!</h2>
+            </div>
+            <div className={`container ${showChatbot ? "show-chatbot" : ""}`}>
+                <button id='chatbot-toggler' onClick={() => setShowChatbot((prev) => !prev)}>
                 <span className="material-symbols-outlined">
                     mode_comment
                 </span>
-                <span className="material-symbols-outlined">
+                    <span className="material-symbols-outlined">
                     close
                 </span>
-            </button>
-            <div className='chatbot'>
-                {/*Chatbot Header*/}
-                <div className='chatbot-header'>
-                    <div className='header-info'>
-                        <ChatbotIcon/>
-                        <h2 className='logo-text'>Chatbot</h2>
+                </button>
+                <div className='chatbot'>
+                    {/*Chatbot Header*/}
+                    <div className='chatbot-header'>
+                        <div className='header-info'>
+                            <ChatbotIcon/>
+                            <h2 className='logo-text'>Chatbot</h2>
+                        </div>
+                        <button onClick={() => setShowChatbot((prev) => !prev)} className="material-symbols-outlined">
+                            keyboard_arrow_down
+                        </button>
                     </div>
-                    <button onClick={() => setShowChatbot((prev) => !prev )} className="material-symbols-outlined">
-                       keyboard_arrow_down
-                    </button>
-                </div>
-                {/*Chatbot Body*/}
-                <div ref={chatBodyRef} className='chatbot-body'>
-                    <div className='message bot-message'>
-                        <ChatbotIcon/>
-                        <p className='message-text'>
-                            Hey there! <br/> How are you? How can I help you today?
-                        </p>
+                    {/*Chatbot Body*/}
+                    <div ref={chatBodyRef} className='chatbot-body'>
+                        <div className='message bot-message'>
+                            <ChatbotIcon/>
+                            <p className='message-text'>
+                                 How can I help you today?
+                            </p>
+                            <div className="quick-replies">
+                                <button onClick={() => {
+                                    const newHistory = [...chatHistory, {role: 'user', text: "Tell me a joke"}];
+                                    setChatHistory(newHistory);
+                                    generateBotResponse(newHistory);
+                                }}>
+                                    Tell me a joke
+                                </button>
+                                <button onClick={() => {
+                                    const newHistory = [...chatHistory, {role: 'user', text: "Give me a quote"}];
+                                    setChatHistory(newHistory);
+                                    generateBotResponse(newHistory);
+                                }}>
+                                    Give me a quote
+                                </button>
+                            </div>
+                        </div>
+
+                        {/*Render the chat history dynamically*/}
+
+                        {chatHistory.map((chat, index) => (
+                            <ChatMessage key={index} chat={chat}/>
+                        ))}
+
                     </div>
-
-                    {/*Render the chat history dynamically*/}
-
-                    {chatHistory.map((chat, index) => (
-                        <ChatMessage key={index} chat={chat} />
-                    ))}
-
-                </div>
-                {/*Chatbot Footer*/}
-                <div className='chatbot-footer'>
-                    <ChatForm chatHistory={chatHistory} setChatHistory={setChatHistory} generateBotResponse={generateBotResponse} />
+                    {/*Chatbot Footer*/}
+                    <div className='chatbot-footer'>
+                        <ChatForm chatHistory={chatHistory} setChatHistory={setChatHistory}
+                                  generateBotResponse={generateBotResponse}/>
+                    </div>
                 </div>
             </div>
         </div>
